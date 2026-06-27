@@ -180,10 +180,12 @@
         .element-Dark { background-color: #2a2a3e; color: #bbb; }
         .element-Dragon { background-color: #7c3aed; color: white; }
         .element-Earth { background-color: #92400e; color: white; }
+        .element-Electric { background-color: #eab308; color: #1a1a2e; }
         .element-Electricity { background-color: #eab308; color: #1a1a2e; }
         .element-Fire { background-color: #dc2626; color: white; }
         .element-Ice { background-color: #06b6d4; color: white; }
         .element-Leaf { background-color: #16a34a; color: white; }
+        .element-Neutral { background-color: #78716c; color: white; }
         .element-None { background-color: #444; color: #aaa; }
         .element-Normal { background-color: #78716c; color: white; }
         .element-Water { background-color: #3b82f6; color: white; }
@@ -338,18 +340,18 @@
                 </select>
                 <select id="workSuitabilityFilter">
                     <option value="">Sort by Work Suitability</option>
+                    <option value="kindling">Kindling</option>
                     <option value="watering">Watering</option>
-                    <option value="seeding">Seeding</option>
-                    <option value="generateElectricity">Generate Electricity</option>
-                    <option value="handcraft">Handcraft</option>
-                    <option value="collection">Collection</option>
-                    <option value="deforest">Deforest</option>
+                    <option value="planting">Planting</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="handiwork">Handiwork</option>
+                    <option value="gathering">Gathering</option>
+                    <option value="lumbering">Lumbering</option>
                     <option value="mining">Mining</option>
-                    <option value="transport">Transport</option>
-                    <option value="produceMedicine">Produce Medicine</option>
-                    <option value="cool">Cool</option>
-                    <option value="emitFlame">Emit Flame</option>
-                    <option value="monsterFarm">Monster Farm</option>
+                    <option value="transporting">Transporting</option>
+                    <option value="medicine">Medicine</option>
+                    <option value="cooling">Cooling</option>
+                    <option value="farming">Farming</option>
                 </select>
                 <button class="clear-filters-btn" onclick="clearFilters()">Clear Filters</button>
             </div>
@@ -388,28 +390,6 @@
         let filteredPals = [];
         const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
 
-        // Color mapping for elements
-        const elementColors = {
-            'Dark': '#2a2a3e',
-            'Dragon': '#7c3aed',
-            'Earth': '#92400e',
-            'Electricity': '#eab308',
-            'Fire': '#dc2626',
-            'Ice': '#06b6d4',
-            'Leaf': '#16a34a',
-            'None': '#444',
-            'Normal': '#78716c',
-            'Water': '#3b82f6'
-        };
-
-        function getLocalizedPalName(palKey, nameMap, fallbackName) {
-            const localizedName = nameMap && nameMap[`PAL_NAME_${palKey}`];
-            if (localizedName && localizedName.trim() && localizedName.trim().toLowerCase() !== 'en_text') {
-                return localizedName.trim();
-            }
-            return fallbackName || palKey;
-        }
-
         function normalizeWikiFileName(value) {
             if (!value) return '';
             return value
@@ -424,7 +404,7 @@
         }
 
         function getWikiImageSlug(pal) {
-            return normalizeWikiFileName(pal.name || pal.key || 'Unknown');
+            return normalizeWikiFileName(pal.name || pal.id || 'Unknown');
         }
 
         function getWikiIconUrl(pal) {
@@ -437,70 +417,34 @@
             return `https://palworld.wiki.gg/images/${slug}_full.png`;
         }
 
-        // Initialize
+        function getElementBadges(pal) {
+            const elements = Array.isArray(pal.elements) && pal.elements.length > 0
+                ? pal.elements.filter(Boolean)
+                : ['None'];
+
+            return elements.map(element => `<span class="element-badge element-${element}">${element}</span>`).join('');
+        }
+
+        function getStatValue(pal, path, fallback = 0) {
+            return path.reduce((value, key) => (value && value[key] !== undefined ? value[key] : undefined), pal) ?? fallback;
+        }
+
         async function init() {
             try {
                 document.getElementById('loading').style.display = 'block';
-                
-                // Load pals.json to get the index
-                const [palsIndexResponse, nameLookupResponse] = await Promise.all([
-                    fetch('json/Pals/pals.json'),
-                    fetch('json/L10N/en/DT_PalNameText_Common.json')
-                ]);
-                const palsIndex = await palsIndexResponse.json();
-                const nameLookup = await nameLookupResponse.json();
-                const nameMap = nameLookup.fields || {};
 
-                // Load all pal data with limited concurrency
-                const palsArray = Object.entries(palsIndex);
-                const concurrencyLimit = 5;
-                
-                for (let i = 0; i < palsArray.length; i += concurrencyLimit) {
-                    const batch = palsArray.slice(i, i + concurrencyLimit);
-                    const batchResults = await Promise.all(
-                        batch.map(async ([key, value]) => {
-                            try {
-                                // Skip entries that don't have a main property
-                                if (!value.main) {
-                                    return null;
-                                }
+                const response = await fetch('pals.json');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-                                // Convert Windows backslashes to forward slashes for web paths
-                                const mainPath = value.main.replace(/\\/g, '/');
-                                const iconPath = value.icon ? value.icon.replace(/\\/g, '/') : '';
-                                
-                                const response = await fetch(`json/Pals/${mainPath}`);
-                                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                                
-                                const data = await response.json();
-                                const fallbackName = data.name || data.tribeName || key;
-                                const identifierCandidate = [data.name, data.tribeName, key].find(value => {
-                                    return typeof value === 'string' && value && !/^\d+$/.test(value);
-                                }) || key;
-                                data.key = identifierCandidate;
-                                data.icon = iconPath;
-                                data.name = getLocalizedPalName(identifierCandidate, nameMap, fallbackName);
-                                data.searchText = `${data.name} ${fallbackName} ${data.tribeName || ''} ${identifierCandidate}`.toLowerCase();
-                                return data;
-                            } catch (e) {
-                                return null;
-                            }
-                        })
-                    );
-                    allPals = allPals.concat(batchResults.filter(p => p !== null));
-                }
+                const data = await response.json();
+                allPals = Array.isArray(data) ? data : [];
+                allPals = allPals.filter(pal => pal && pal.id);
+                allPals.sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id));
 
-                // Sort by name
-                allPals.sort((a, b) => a.name.localeCompare(b.name));
-                console.log('allPals:', allPals);
-                window.allPals = allPals; // Expose for debugging
-                // Populate filters
+                window.allPals = allPals;
                 populateFilters();
-
-                // Display all pals
                 filteredPals = [...allPals];
                 render();
-
                 document.getElementById('loading').style.display = 'none';
             } catch (error) {
                 console.error('Failed to load pals:', error);
@@ -511,11 +455,14 @@
         function populateFilters() {
             const elements = new Set();
             const sizes = new Set();
+            const rarities = new Set();
 
             allPals.forEach(pal => {
-                if (pal.elementType1 && pal.elementType1 !== 'None') elements.add(pal.elementType1);
-                if (pal.elementType2 && pal.elementType2 !== 'None') elements.add(pal.elementType2);
+                (pal.elements || []).forEach(element => {
+                    if (element && element !== 'None') elements.add(element);
+                });
                 if (pal.size) sizes.add(pal.size);
+                if (pal.rarity) rarities.add(pal.rarity);
             });
 
             const elementFilter = document.getElementById('elementFilter');
@@ -536,6 +483,14 @@
                     sizeFilter.appendChild(option);
                 }
             });
+
+            const rarityFilter = document.getElementById('rarityFilter');
+            Array.from(rarities).sort().forEach(rarity => {
+                const option = document.createElement('option');
+                option.value = rarity;
+                option.textContent = rarity;
+                rarityFilter.appendChild(option);
+            });
         }
 
         function filterPals() {
@@ -546,25 +501,23 @@
             const workSuitabilityFilter = document.getElementById('workSuitabilityFilter').value;
 
             filteredPals = allPals.filter(pal => {
-                const matchesSearch = (pal.searchText || '').includes(searchTerm) ||
-                    (pal.tribeName && pal.tribeName.toLowerCase().includes(searchTerm));
-                const matchesElement = !elementFilter || 
-                    pal.elementType1 === elementFilter || 
-                    pal.elementType2 === elementFilter;
+                const searchableText = [pal.name, pal.id, pal.title, pal.description].filter(Boolean).join(' ').toLowerCase();
+                const matchesSearch = searchableText.includes(searchTerm);
+                const matchesElement = !elementFilter || (pal.elements || []).includes(elementFilter);
                 const matchesSize = !sizeFilter || pal.size === sizeFilter;
-                const matchesRarity = !rarityFilter || pal.rarity === parseInt(rarityFilter);
+                const matchesRarity = !rarityFilter || pal.rarity === rarityFilter;
 
-                return matchesSearch && matchesElement && matchesSize && matchesRarity && (pal.zukanIndex > -1);
+                return matchesSearch && matchesElement && matchesSize && matchesRarity;
             });
 
             if (workSuitabilityFilter) {
                 filteredPals.sort((a, b) => {
-                    const aValue = Number(a[workSuitabilityFilter] || 0);
-                    const bValue = Number(b[workSuitabilityFilter] || 0);
+                    const aValue = Number(getStatValue(a, ["work", workSuitabilityFilter]) || 0);
+                    const bValue = Number(getStatValue(b, ["work", workSuitabilityFilter]) || 0);
                     return bValue - aValue;
                 });
             } else {
-                filteredPals.sort((a, b) => a.name.localeCompare(b.name));
+                filteredPals.sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id));
             }
 
             render();
@@ -585,32 +538,29 @@
 
             container.style.display = 'grid';
             noResults.style.display = 'none';
-            
+
             container.innerHTML = filteredPals.map(pal => {
-                const foodAmount = Math.max(0, Math.min(10, pal.foodAmount || 0));
+                const foodAmount = Math.max(0, Math.min(10, pal.food || 0));
                 const foodAmountIcons = '<img src="https://static.wikia.nocookie.net/palworld/images/1/16/Food_on_icon.png/revision/latest/scale-to-width-down/15?cb=20240414211940" alt="Food On" style="width: 15px; height: 15px;">'.repeat(foodAmount) + '<img src="https://static.wikia.nocookie.net/palworld/images/d/dc/Food_off_icon.png/revision/latest/scale-to-width-down/15?cb=20240417215022" alt="Food Off" style="width: 15px; height: 15px;">'.repeat(10 - foodAmount);
+                const attackValue = Math.max(getStatValue(pal, ['stats', 'meleeAttack']), getStatValue(pal, ['stats', 'rangedAttack']));
+
                 return `
-                <div class="pal-card" onclick="showDetails('${pal.key}')">
+                <div class="pal-card" onclick="showDetails('${pal.id}')">
                     <div class="pal-image">
                         <img src="${getWikiIconUrl(pal)}" alt="${pal.name}" onerror="this.style.display='none'">
                     </div>
                     <h4>${pal.name}</h4>
                     <div class="pal-info-small">
-                        <strong>#${pal.gameIndex}</strong>
+                        <strong>#${pal.paldexNumber || '—'}</strong>
                     </div>
-                    <div>
-                        <span class="element-badge element-${pal.elementType1}">${pal.elementType1}</span>
-                        ${pal.elementType2 && pal.elementType2 !== 'None' ? `<span class="element-badge element-${pal.elementType2}">${pal.elementType2}</span>` : ''}
-                    </div>
+                    <div>${getElementBadges(pal)}</div>
                     <div class="pal-info-small">
-                        Size: <strong>${pal.size}</strong>
+                        Size: <strong>${pal.size || '—'}</strong>
                     </div>
-                    <div class="pal-info-small">
-                        ${foodAmountIcons}
-                    </div>
+                    <div class="pal-info-small">${foodAmountIcons}</div>
                     <div style="margin-top: auto; padding-top: 10px; font-size: 0.9rem; color: #aaa;">
                         <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-                            <span><i class="fas fa-heart"></i>: <strong>${pal.hp || 0}</strong> </span> | <span><i class="fas fa-bolt"></i>: <strong>${pal.shotAttack || 0}</strong> </span> | <span><i class="fas fa-shield-alt"></i>: <strong>${pal.defense || 0}</strong></span>
+                            <span><i class="fas fa-heart"></i>: <strong>${getStatValue(pal, ['stats', 'hp'])}</strong></span> | <span><i class="fas fa-bolt"></i>: <strong>${attackValue}</strong></span> | <span><i class="fas fa-shield-alt"></i>: <strong>${getStatValue(pal, ['stats', 'defense'])}</strong></span>
                         </div>
                     </div>
                 </div>
@@ -618,48 +568,84 @@
             }).join('');
         }
 
-        function showDetails(palKey) {
-            const pal = allPals.find(p => p.key === palKey);
+        function showDetails(palId) {
+            const pal = allPals.find(p => p.id === palId);
             if (!pal) return;
 
-            const foodAmount = Math.max(0, Math.min(10, pal.foodAmount || 0));
+            const foodAmount = Math.max(0, Math.min(10, pal.food || 0));
             const foodAmountIcons = '<img src="https://static.wikia.nocookie.net/palworld/images/1/16/Food_on_icon.png/revision/latest/scale-to-width-down/15?cb=20240414211940" alt="Food On" style="width: 15px; height: 15px;">'.repeat(foodAmount) + '<img src="https://static.wikia.nocookie.net/palworld/images/d/dc/Food_off_icon.png/revision/latest/scale-to-width-down/15?cb=20240417215022" alt="Food Off" style="width: 15px; height: 15px;">'.repeat(10 - foodAmount);
+            const workEntries = Object.entries(pal.work || {})
+                .filter(([, value]) => Number(value) > 0)
+                .map(([key, value]) => {
+                    const iconMap = {
+                        kindling: 'https://static.wikia.nocookie.net/palworld/images/d/d7/Kindling_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213341',
+                        watering: 'https://static.wikia.nocookie.net/palworld/images/4/48/Watering_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414212635',
+                        planting: 'https://static.wikia.nocookie.net/palworld/images/7/75/Planting_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414212740',
+                        electricity: 'https://static.wikia.nocookie.net/palworld/images/0/0f/Generating_Electricity_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213302',
+                        handiwork: 'https://static.wikia.nocookie.net/palworld/images/a/a2/Handiwork_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213153',
+                        gathering: 'https://static.wikia.nocookie.net/palworld/images/a/a2/Gathering_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213450',
+                        lumbering: 'https://static.wikia.nocookie.net/palworld/images/b/bc/Lumbering_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213420',
+                        mining: 'https://static.wikia.nocookie.net/palworld/images/7/7b/Mining_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213127',
+                        medicine: 'https://static.wikia.nocookie.net/palworld/images/e/e9/Medicine_Production_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213031',
+                        cooling: 'https://static.wikia.nocookie.net/palworld/images/3/32/Cooling_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213550',
+                        transporting: 'https://static.wikia.nocookie.net/palworld/images/8/8f/Transporting_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414212712',
+                        farming: 'https://static.wikia.nocookie.net/palworld/images/d/d7/Farming_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213105'
+                    };
+                    const labelMap = {
+                        kindling: 'Kindling',
+                        watering: 'Watering',
+                        planting: 'Planting',
+                        electricity: 'Electricity',
+                        handiwork: 'Handiwork',
+                        gathering: 'Gathering',
+                        lumbering: 'Lumbering',
+                        mining: 'Mining',
+                        medicine: 'Medicine',
+                        cooling: 'Cooling',
+                        transporting: 'Transporting',
+                        farming: 'Farming'
+                    };
+                    const icon = iconMap[key];
+                    const label = labelMap[key] || key;
+                    return `<div style="display: flex; align-items: center; gap: 6px;">${icon ? `<img src="${icon}" alt="${label}" style="width: 24px; height: 24px;">` : ''}<span>${label}: ${value}</span></div>`;
+                });
+            const stats = pal.stats || {};
+            const speed = pal.speed || {};
+            const breeding = pal.breeding || {};
+            const behavior = pal.behavior || {};
 
-            document.getElementById('palName').textContent = `${pal.name} (${pal.tribeName})`;
+            document.getElementById('palName').textContent = `${pal.name} (${pal.title || pal.id})`;
 
             let detailsHtml = `
                 <div class="row">
                     <div class="col-md-4 text-center">
                         <img src="${getWikiMenuUrl(pal)}" alt="${pal.name}" style="max-width: 100%; max-height: 250px; margin-bottom: 15px;" onerror="this.onerror=null; this.src='${getWikiIconUrl(pal)}'">
                         <div style="background-color: #2a2a3e; padding: 12px; border-radius: 6px;">
-                            <div style="margin-bottom: 10px;">
-                                <strong>Game Index:</strong> #${pal.gameIndex}
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <strong>Zukan Index:</strong> #${pal.zukanIndex}
-                            </div>
+                            <div style="margin-bottom: 10px;"><strong>Paldex:</strong> #${pal.paldexNumber || '—'}</div>
+                            <div style="margin-bottom: 10px;"><strong>Rarity:</strong> ${pal.rarity || '—'}</div>
+                            <div style="margin-bottom: 10px;"><strong>Price:</strong> ${pal.price || 0}</div>
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div style="background-color: #2a2a3e; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
                             <h6 style="color: var(--primary-color); margin-bottom: 10px;">Basic Info</h6>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div><strong>Size:</strong> ${pal.size}</div>
+                                <div><strong>Size:</strong> ${pal.size || '—'}</div>
                                 <div><strong>Food:</strong> ${foodAmountIcons}</div>
-                                <div><strong>Element 1:</strong> <span class="element-badge element-${pal.elementType1}">${pal.elementType1}</span></div>
-                                <div><strong>Element 2:</strong> <span class="element-badge element-${pal.elementType2}">${pal.elementType2}</span></div>
-                                <div><strong>Price:</strong> ${pal.price} Gold</div>
-                                <div><strong>Capture Rate:</strong> ${(pal.captureRate * 100).toFixed(0)}%</div>
+                                <div><strong>Elements:</strong> ${getElementBadges(pal)}</div>
+                                <div><strong>Genus:</strong> ${pal.genus || '—'}</div>
+                                <div><strong>Partner Skill:</strong> ${pal.partnerSkill?.name || '—'}</div>
+                                <div><strong>Boss:</strong> ${pal.isBoss ? 'Yes' : 'No'}</div>
                             </div>
                         </div>
 
                         <div style="background-color: #2a2a3e; padding: 12px; border-radius: 6px;">
                             <h6 style="color: var(--primary-color); margin-bottom: 10px;">Behavior</h6>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
-                                <div><strong>Nocturnal:</strong> ${pal.isNocturnal ? 'Yes' : 'No'}</div>
-                                <div><strong>Edible:</strong> ${pal.isEdible ? 'Yes' : 'No'}</div>
-                                <div><strong>Is Boss:</strong> ${pal.isBoss ? 'Yes' : 'No'}</div>
-                                <div><strong>Is Tower Boss:</strong> ${pal.isTowerBoss ? 'Yes' : 'No'}</div>
+                                <div><strong>Nocturnal:</strong> ${behavior.nocturnal ? 'Yes' : 'No'}</div>
+                                <div><strong>Predator:</strong> ${behavior.predator ? 'Yes' : 'No'}</div>
+                                <div><strong>Male Probability:</strong> ${breeding.maleProbability || 0}%</div>
+                                <div><strong>Combi Rank:</strong> ${breeding.combiRank || 0}</div>
                             </div>
                         </div>
                     </div>
@@ -667,69 +653,27 @@
 
                 <div class="ability-section">
                     <h6>Work Abilities</h6>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.9rem;">zxc${pal.produceMedicine}
-                        ${pal.emitFlame > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/d/d7/Kindling_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213341"> Kindling: ${pal.emitFlame}</div>` : ''}
-                        ${pal.watering > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/4/48/Watering_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414212635" alt="Watering"> Watering: ${pal.watering}</div>` : ''}
-                        ${pal.seeding > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/7/75/Planting_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414212740" alt="Planting"> Planting: ${pal.seeding}</div>` : ''}
-                        ${pal.generateElectricity > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/0/0f/Generating_Electricity_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213302" alt="Electricity"> Electricity: ${pal.generateElectricity}</div>` : ''}
-                        ${pal.handcraft > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/a/a2/Handiwork_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213153" alt="Handiwork"> ${pal.handcraft}</div>` : ''}
-                        ${pal.collection > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/a/a2/Gathering_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213450" alt="Gathering"> Gathering: ${pal.collection}</div>` : ''}
-                        ${pal.deforest > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/b/bc/Lumbering_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213420" alt="Lumbering"> Lumbering: ${pal.deforest}</div>` : ''}
-                        ${pal.mining > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/7/7b/Mining_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213127"> ${pal.mining}</div>` : ''}
-                        ${pal.produceMedicine ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/e/e9/Medicine_Production_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213031"> Medicine: ${pal.produceMedicine}</div>` : ''}
-                        ${pal.cool > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/3/32/Cooling_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213550"> Cooling: ${pal.cool}</div>` : ''}
-                        ${pal.transport > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/8/8f/Transporting_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414212712"></i> ${pal.transport} (${pal.transportSpeed || 0})</div>` : ''}
-                        ${pal.monsterFarm > 0 ? `<div><img src="https://static.wikia.nocookie.net/palworld/images/d/d7/Farming_Icon.png/revision/latest/scale-to-width-down/24?cb=20240414213105"> Farming: ${pal.monsterFarm}</div>` : ''}
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem;">
+                        ${workEntries.length > 0 ? workEntries.join('') : '<p style="color: #666; margin: 0;">No work abilities</p>'}
                     </div>
-                    ${!pal.watering && !pal.seeding && !pal.generateElectricity && !pal.handcraft && !pal.collection && !pal.deforest && !pal.mining && !pal.transport && !pal.produceMedicine && !pal.cool && !pal.emitFlame && !pal.monsterFarm ? '<p style="color: #666;">No work abilities</p>' : ''}
                 </div>
+
                 <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">HP</div>
-                        <div class="stat-value">${pal.hp || 0}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Full Stomach</div>
-                        <div class="stat-value">${pal.maxFullStomach || 0}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Attack</div>
-                        <div class="stat-value">${pal.shotAttack || 0}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Defense</div>
-                        <div class="stat-value">${pal.defense || 0}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Support</div>
-                        <div class="stat-value">${pal.support || 0}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Stamina</div>
-                        <div class="stat-value">${pal.stamina || 0}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Walk Speed</div>
-                        <div class="stat-value">${pal.walkSpeed || 0}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Run Speed</div>
-                        <div class="stat-value">${pal.runSpeed || 0}</div>
-                    </div>
+                    <div class="stat-item"><div class="stat-label">HP</div><div class="stat-value">${stats.hp || 0}</div></div>
+                    <div class="stat-item"><div class="stat-label">Melee Attack</div><div class="stat-value">${stats.meleeAttack || 0}</div></div>
+                    <div class="stat-item"><div class="stat-label">Ranged Attack</div><div class="stat-value">${stats.rangedAttack || 0}</div></div>
+                    <div class="stat-item"><div class="stat-label">Defense</div><div class="stat-value">${stats.defense || 0}</div></div>
+                    <div class="stat-item"><div class="stat-label">Support</div><div class="stat-value">${stats.support || 0}</div></div>
+                    <div class="stat-item"><div class="stat-label">Craft Speed</div><div class="stat-value">${stats.craftSpeed || 0}</div></div>
+                    <div class="stat-item"><div class="stat-label">Stamina</div><div class="stat-value">${stats.stamina || 0}</div></div>
+                    <div class="stat-item"><div class="stat-label">Walk / Run</div><div class="stat-value">${speed.walk || 0} / ${speed.run || 0}</div></div>
                 </div>
 
+                ${pal.description ? `<div class="ability-section" style="margin-top: 20px;"><h6>Description</h6><p style="margin: 0;">${pal.description}</p></div>` : ''}
 
-                <div class="ability-section" style="margin-top: 20px;">
-                    <h6>Additional Stats</h6>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 0.9rem;">
-                        <div><strong>Craft Speed:</strong> ${pal.craftSpeed}%</div>
-                        <div><strong>Max Hunger:</strong> ${pal.maxFullStomach}</div>
-                        <div><strong>Viewing Distance:</strong> ${pal.viewingDistance}m</div>
-                        <div><strong>Viewing Angle:</strong> ${pal.viewingAngle}°</div>
-                        <div><strong>Male Probability:</strong> ${pal.maleProbability}%</div>
-                        <div><strong>Combi Rank:</strong> ${pal.combiRank}</div>
-                    </div>
-                </div>
+                ${pal.partnerSkill?.description ? `<div class="ability-section" style="margin-top: 20px;"><h6>Partner Skill</h6><p style="margin: 0;">${pal.partnerSkill.description}</p></div>` : ''}
+
+                ${Array.isArray(pal.activeSkills) && pal.activeSkills.length > 0 ? `<div class="ability-section" style="margin-top: 20px;"><h6>Active Skills</h6><ul style="margin: 0; padding-left: 20px;">${pal.activeSkills.slice(0, 6).map(skill => `<li><strong>${skill.name}</strong> — ${skill.description}</li>`).join('')}</ul></div>` : ''}
             `;
 
             document.getElementById('palDetails').innerHTML = detailsHtml;
@@ -745,14 +689,12 @@
             filterPals();
         }
 
-        // Event listeners
         document.getElementById('searchInput').addEventListener('input', filterPals);
         document.getElementById('elementFilter').addEventListener('change', filterPals);
         document.getElementById('sizeFilter').addEventListener('change', filterPals);
         document.getElementById('rarityFilter').addEventListener('change', filterPals);
         document.getElementById('workSuitabilityFilter').addEventListener('change', filterPals);
 
-        // Initialize on load
         init();
     </script>
 </body>
