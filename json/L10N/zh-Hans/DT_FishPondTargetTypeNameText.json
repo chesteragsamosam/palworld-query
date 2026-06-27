@@ -1,0 +1,8 @@
+{
+  "namespace": "DT_FishPondTargetTypeNameText",
+  "fields": {
+    "NAME_SHADOW_SMALL": "\u5C0F\u578B\u9C7C\u5F71",
+    "NAME_SHADOW_MEDIUM": "\u4E2D\u578B\u9C7C\u5F71",
+    "NAME_SHADOW_BIG": "\u5927\u578B\u9C7C\u5F71"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "namespace": "DT_FishPondTargetTypeNameText",
+  "fields": {
+    "NAME_SHADOW_SMALL": "Sylwetka ma\u0142ej ryby",
+    "NAME_SHADOW_MEDIUM": "Sylwetka \u015Bredniej ryby",
+    "NAME_SHADOW_BIG": "Sylwetka du\u017Cej ryby"
+  }
+}

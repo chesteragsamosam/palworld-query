@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Gua Padang Rumput",
+    "DUNGEON_FOREST": "Hutan Rimba Tersembunyi",
+    "DUNGEON_VOLCANO": "Gua Membara di Gunung Berapi",
+    "DUNGEON_DESERT": "Reruntuhan Tersembunyi di Padang Pasir",
+    "DUNGEON_SNOW": "Gua Beku di Gunung Salju",
+    "DUNGEON_SAKURAJIMA": "Gua Bunga Keramat di Pulau Sakurajima",
+    "DUNGEON_DARKISLAND": "Gua Iblis di Langit Jatuh",
+    "DUNGEON_GRASSHARD": "Gudang Penyelundupan Gerombolan Pemburu Liar Rayne",
+    "DUNGEON_FORESTHARD": "Pos Perdagangan Gelap Kelompok Perlindungan Pal",
+    "DUNGEON_VOLCANOHARD": "Pasar Gelap Sekutu Api Abadi",
+    "DUNGEON_DESERTHARD": "Pabrik Ilegal Kelompok Penegak Hukum",
+    "DUNGEON_SNOWHARD": "Laboratorium Unit Penelitian Genetika",
+    "DUNGEON_SAKURAJIMAHARD": "Tempat Persembunyian Rahasia Bunga Bulan",
+    "DUNGEON_DARKISLANDHARD": "Reruntuhan Kuno Langit Jatuh"
+  }
+}

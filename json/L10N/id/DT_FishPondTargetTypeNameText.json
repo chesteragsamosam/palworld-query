@@ -1,0 +1,8 @@
+{
+  "namespace": "DT_FishPondTargetTypeNameText",
+  "fields": {
+    "NAME_SHADOW_SMALL": "Bayangan ikan kecil",
+    "NAME_SHADOW_MEDIUM": "Bayangan ikan medium",
+    "NAME_SHADOW_BIG": "Bayangan ikan besar"
+  }
+}

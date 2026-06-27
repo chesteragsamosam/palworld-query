@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Grotta nei campi",
+    "DUNGEON_FOREST": "Boschi inesplorati",
+    "DUNGEON_VOLCANO": "Grotta ardente del vulcano",
+    "DUNGEON_DESERT": "Rovine nascoste nel deserto",
+    "DUNGEON_SNOW": "Grotta gelida dei monti innevati",
+    "DUNGEON_SAKURAJIMA": "Grotta sacra dell\u0027isola dei ciliegi",
+    "DUNGEON_DARKISLAND": "Covo della rovina",
+    "DUNGEON_GRASSHARD": "Magazzino del Sindacato di Rayne",
+    "DUNGEON_FORESTHARD": "Mercato illecito dell\u0027Ente per la tutela dei Pal",
+    "DUNGEON_VOLCANOHARD": "Mercato nero della Congrega del fuoco perenne",
+    "DUNGEON_DESERTHARD": "Laboratorio illegale della Milizia volontaria",
+    "DUNGEON_SNOWHARD": "Laboratorio della Squadra per la ricerca genetica",
+    "DUNGEON_SAKURAJIMAHARD": "Base segreta del clan dei fiori di luna",
+    "DUNGEON_DARKISLANDHARD": "Antica dimora del popolo della rovina"
+  }
+}

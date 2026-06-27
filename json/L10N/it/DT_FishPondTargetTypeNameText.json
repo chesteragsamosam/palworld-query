@@ -1,0 +1,8 @@
+{
+  "namespace": "DT_FishPondTargetTypeNameText",
+  "fields": {
+    "NAME_SHADOW_SMALL": "Sagoma di pesce piccolo",
+    "NAME_SHADOW_MEDIUM": "Sagoma di pesce medio",
+    "NAME_SHADOW_BIG": "Sagoma di pesce enorme"
+  }
+}

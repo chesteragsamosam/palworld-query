@@ -1,0 +1,8 @@
+{
+  "namespace": "DT_FishPondTargetTypeNameText",
+  "fields": {
+    "NAME_SHADOW_SMALL": "Sombra de pez peque\u00F1a",
+    "NAME_SHADOW_MEDIUM": "Sombra de pez mediana",
+    "NAME_SHADOW_BIG": "Sombra de pez grande"
+  }
+}

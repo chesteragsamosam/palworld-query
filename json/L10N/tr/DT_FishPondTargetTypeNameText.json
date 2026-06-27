@@ -1,0 +1,8 @@
+{
+  "namespace": "DT_FishPondTargetTypeNameText",
+  "fields": {
+    "NAME_SHADOW_SMALL": "K\u00FC\u00E7\u00FCk bal\u0131k yans\u0131mas\u0131",
+    "NAME_SHADOW_MEDIUM": "Orta b\u00FCy\u00FCkl\u00FCkteki bal\u0131k yans\u0131mas\u0131",
+    "NAME_SHADOW_BIG": "B\u00FCy\u00FCk bal\u0131k yans\u0131mas\u0131"
+  }
+}

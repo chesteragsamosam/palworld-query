@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Yemye\u015Fil Oyuk",
+    "DUNGEON_FOREST": "Orman\u0131n Gizli Diyar\u0131",
+    "DUNGEON_VOLCANO": "Alevli Ma\u011Fara",
+    "DUNGEON_DESERT": "\u00C7\u00F6l\u00FCn Gizli S\u0131\u011F\u0131na\u011F\u0131",
+    "DUNGEON_SNOW": "Astral Buz Ma\u011Faras\u0131",
+    "DUNGEON_SAKURAJIMA": "Semavi Sakura Ma\u011Faras\u0131",
+    "DUNGEON_DARKISLAND": "Feybreak\u0027in Karanl\u0131k Ma\u011Faras\u0131",
+    "DUNGEON_GRASSHARD": "Rayne \u00D6rg\u00FCt\u00FC Ka\u00E7ak\u00E7\u0131l\u0131k Deposu",
+    "DUNGEON_FORESTHARD": "H\u00FCr Pal \u0130ttifak\u0131 Ka\u00E7ak Ticaret Merkezi",
+    "DUNGEON_VOLCANOHARD": "\u00D6l\u00FCms\u00FCz Ate\u015F Yasak Pazar\u0131",
+    "DUNGEON_DESERTHARD": "PASG Yasa D\u0131\u015F\u0131 Fabrikas\u0131",
+    "DUNGEON_SNOWHARD": "PAL Genetik Ara\u015Ft\u0131rma Laboratuvar\u0131",
+    "DUNGEON_SAKURAJIMAHARD": "Ay Goncalar\u0131n\u0131n Gizli Saklanma Yeri",
+    "DUNGEON_DARKISLANDHARD": "Kadim Feybreak Kal\u0131nt\u0131lar\u0131"
+  }
+}

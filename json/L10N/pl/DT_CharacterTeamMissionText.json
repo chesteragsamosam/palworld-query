@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Zielona Kotlina",
+    "DUNGEON_FOREST": "Tajemna Le\u015Bna Kraina",
+    "DUNGEON_VOLCANO": "P\u0142on\u0105ca Pieczara",
+    "DUNGEON_DESERT": "Ukryte Sanktuarium Pustyni",
+    "DUNGEON_SNOW": "Zamarzni\u0119ta Pieczara Astralna",
+    "DUNGEON_SAKURAJIMA": "Pieczara Niebia\u0144skiej Sakury",
+    "DUNGEON_DARKISLAND": "Mroczna Jaskinia Feybreak",
+    "DUNGEON_GRASSHARD": "Magazyn przemytnik\u00F3w Syndykatu Rayne",
+    "DUNGEON_FORESTHARD": "Nielegalny targ Zwi\u0105zku Wolnych Pali",
+    "DUNGEON_VOLCANOHARD": "Zakazany rynek Wiecznego P\u0142omienia",
+    "DUNGEON_DESERTHARD": "Nielegalna fabryka SOWP",
+    "DUNGEON_SNOWHARD": "Laboratorium Bada\u0144 Genetycznych PAL",
+    "DUNGEON_SAKURAJIMAHARD": "Tajna kryj\u00F3wka Ksi\u0119\u017Cycowego Kwiatu",
+    "DUNGEON_DARKISLANDHARD": "Staro\u017Cytne ruiny Feybreak"
+  }
+}

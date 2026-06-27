@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Verdant Hollow",
+    "DUNGEON_FOREST": "Forest\u0027s Secret Realm",
+    "DUNGEON_VOLCANO": "Blazing Cavern",
+    "DUNGEON_DESERT": "Desert\u2019s Hidden Sanctum",
+    "DUNGEON_SNOW": "Astral Frost Cavern",
+    "DUNGEON_SAKURAJIMA": "Celestial Sakura Cavern",
+    "DUNGEON_DARKISLAND": "Dark Cave of Feybreak",
+    "DUNGEON_GRASSHARD": "Rayne Syndicate Smuggling Warehouse",
+    "DUNGEON_FORESTHARD": "Free Pal Alliance Illicit Trading Post",
+    "DUNGEON_VOLCANOHARD": "Eternal Pyre\u0027s Forbidden Market",
+    "DUNGEON_DESERTHARD": "PIDF Illegal Factory",
+    "DUNGEON_SNOWHARD": "PAL Genetic Research Laboratory",
+    "DUNGEON_SAKURAJIMAHARD": "Moonflower\u0027s Secret Hideout",
+    "DUNGEON_DARKISLANDHARD": "Ancient Feybreak Remains"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Hang \u0110\u1ED9ng Tr\u00EAn Th\u1EA3o Nguy\u00EAn",
+    "DUNGEON_FOREST": "C\u1EA5m \u0110\u1ECBa N\u01A1i R\u1EEBng R\u1EADm",
+    "DUNGEON_VOLCANO": "Hang \u0110\u1ED9ng N\u00FAi L\u1EEDa R\u1EF1c Ch\u00E1y",
+    "DUNGEON_DESERT": "T\u00E0n T\u00EDch \u1EA8n M\u00ECnh N\u01A1i Sa M\u1EA1c",
+    "DUNGEON_SNOW": "Hang B\u0103ng Tr\u00EAn N\u00FAi Tuy\u1EBFt",
+    "DUNGEON_SAKURAJIMA": "Hang \u0110\u1EA3o Hoa \u0110\u00E0o K\u1EF3 Di\u1EC7u",
+    "DUNGEON_DARKISLAND": "Hang \u0110\u1ED9ng Feybreak U \u00C1m",
+    "DUNGEON_GRASSHARD": "Kho H\u00E0ng C\u1EE7a T\u1ED5 Ch\u1EE9c S\u0103n Tr\u1ED9m Rayne",
+    "DUNGEON_FORESTHARD": "\u0110i\u1EC3m Giao D\u1ECBch Ng\u1EA7m C\u1EE7a T\u1ED5 Ch\u1EE9c B\u1EA3o V\u1EC7 Pal",
+    "DUNGEON_VOLCANOHARD": "Ch\u1EE3 \u0110en C\u1EE7a \u0110\u1ED3ng Minh Ng\u1ECDn L\u1EEDa V\u0129nh C\u1EEDu",
+    "DUNGEON_DESERTHARD": "Nh\u00E0 M\u00E1y Chui C\u1EE7a \u0110\u1ED9i T\u1EF1 V\u1EC7",
+    "DUNGEON_SNOWHARD": "S\u1EDF Nghi\u00EAn C\u1EE9u C\u1EE7a \u0110\u01A1n V\u1ECB Nghi\u00EAn C\u1EE9u Gen",
+    "DUNGEON_SAKURAJIMAHARD": "C\u0103n C\u1EE9 B\u00ED M\u1EADt C\u1EE7a Gia T\u1ED9c Hoa M\u1EB7t Tr\u0103ng",
+    "DUNGEON_DARKISLANDHARD": "Di T\u00EDch C\u1ED5 Feybreak"
+  }
+}

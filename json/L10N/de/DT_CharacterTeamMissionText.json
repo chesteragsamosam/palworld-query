@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Grasland-H\u00F6hle",
+    "DUNGEON_FOREST": "Waldversteck",
+    "DUNGEON_VOLCANO": "Gluthei\u00DFe Vulkanh\u00F6hle",
+    "DUNGEON_DESERT": "Verborgene W\u00FCstenruinen",
+    "DUNGEON_SNOW": "Eisige Schneegipfelh\u00F6hle",
+    "DUNGEON_SAKURAJIMA": "Geisterhafte Kirschbl\u00FCtenh\u00F6hle",
+    "DUNGEON_DARKISLAND": "Verfluchte Feybreakh\u00F6hle",
+    "DUNGEON_GRASSHARD": "Schmugglerlager des Rayne-Syndikats",
+    "DUNGEON_FORESTHARD": "Untergrundb\u00F6rse der Liga der Palfreunde",
+    "DUNGEON_VOLCANOHARD": "Schwarzmarkt der Bruderschaft der ewigen Lohe",
+    "DUNGEON_DESERTHARD": "Illegale Fabrik der Miliz",
+    "DUNGEON_SNOWHARD": "Forschungslabor des Instituts f\u00FCr Genforschung",
+    "DUNGEON_SAKURAJIMAHARD": "Geheimbasis der Gesellschaft des Blumenmondes",
+    "DUNGEON_DARKISLANDHARD": "Alte Ruinen der Feybreak"
+  }
+}

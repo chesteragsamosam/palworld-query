@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Caverne des Plaines",
+    "DUNGEON_FOREST": "Zone Recul\u00E9e de la For\u00EAt",
+    "DUNGEON_VOLCANO": "Grotte Br\u00FBlante du Volcan",
+    "DUNGEON_DESERT": "Ruines Cach\u00E9es du D\u00E9sert",
+    "DUNGEON_SNOW": "Grotte Gel\u00E9e de la Montagne",
+    "DUNGEON_SAKURAJIMA": "Grotte Mystique de l\u0027\u00CEle aux Cerisiers",
+    "DUNGEON_DARKISLAND": "Crypte du Paradis D\u00E9chu",
+    "DUNGEON_GRASSHARD": "Hangar de Contrebande du Syndicat de Rayne",
+    "DUNGEON_FORESTHARD": "March\u00E9 Noir de la Ligue pour la Protection des Pals",
+    "DUNGEON_VOLCANOHARD": "March\u00E9 Noir de la Confr\u00E9rie des Flammes \u00C9ternelles",
+    "DUNGEON_DESERTHARD": "Usine Ill\u00E9gale de la Milice Populaire",
+    "DUNGEON_SNOWHARD": "Laboratoire de l\u2019Unit\u00E9 de Recherche G\u00E9n\u00E9tique",
+    "DUNGEON_SAKURAJIMAHARD": "Base Secr\u00E8te de la Soci\u00E9t\u00E9 des Fleurs Lunaires",
+    "DUNGEON_DARKISLANDHARD": "Vestiges du Paradis D\u00E9chu"
+  }
+}

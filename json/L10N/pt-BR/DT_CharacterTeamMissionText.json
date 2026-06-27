@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Caverna das Plan\u00EDcies",
+    "DUNGEON_FOREST": "Ermo da Floresta",
+    "DUNGEON_VOLCANO": "Caverna Incandescente do Vulc\u00E3o",
+    "DUNGEON_DESERT": "Ru\u00EDnas Ocultas no Deserto",
+    "DUNGEON_SNOW": "Caverna G\u00E9lida da Montanha Nevada",
+    "DUNGEON_SAKURAJIMA": "Caverna Fl\u00F3rea da Ilha das Cerejeiras",
+    "DUNGEON_DARKISLAND": "Caverna Demon\u00EDaca Deca\u00EDda",
+    "DUNGEON_GRASSHARD": "Armaz\u00E9m dos Ca\u00E7adores Clandestinos de Rayne",
+    "DUNGEON_FORESTHARD": "Escrit\u00F3rio Clandestino da Associa\u00E7\u00E3o de Prote\u00E7\u00E3o aos Pals",
+    "DUNGEON_VOLCANOHARD": "Mercado Negro dos Amigos da Chama Eterna",
+    "DUNGEON_DESERTHARD": "F\u00E1brica Ilegal da Mil\u00EDcia Popular",
+    "DUNGEON_SNOWHARD": "Laborat\u00F3rio da Unidade de Pesquisas Gen\u00E9ticas",
+    "DUNGEON_SAKURAJIMAHARD": "Base Secreta do Bando das Flores e da Lua",
+    "DUNGEON_DARKISLANDHARD": "Ru\u00EDnas Antigas do Povo Deca\u00EDdo"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "namespace": "DT_FishPondTargetTypeNameText",
+  "fields": {
+    "NAME_SHADOW_SMALL": "Silhueta pequena",
+    "NAME_SHADOW_MEDIUM": "Silhueta m\u00E9dia",
+    "NAME_SHADOW_BIG": "Silhueta grande"
+  }
+}

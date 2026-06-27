@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Cueva de las praderas",
+    "DUNGEON_FOREST": "Regi\u00F3n  forestal inexplorada",
+    "DUNGEON_VOLCANO": "Cueva ardiente del volc\u00E1n",
+    "DUNGEON_DESERT": "Ruinas ocultas del desierto",
+    "DUNGEON_SNOW": "Cueva g\u00E9lida de los picos nevados",
+    "DUNGEON_SAKURAJIMA": "Cueva espiritual de la Isla Cerezo",
+    "DUNGEON_DARKISLAND": "Caverna demon\u00EDaca de Tenraku",
+    "DUNGEON_GRASSHARD": "Almac\u00E9n secreto del Sindicato Rayne",
+    "DUNGEON_FORESTHARD": "Zona turbia de la Liga de defensa de los Pals",
+    "DUNGEON_VOLCANOHARD": "Mercado negro de la Llama eterna",
+    "DUNGEON_DESERTHARD": "F\u00E1brica ilegal de Los Vigilantes",
+    "DUNGEON_SNOWHARD": "Laboratorio del Equipo de investigaci\u00F3n gen\u00E9tica",
+    "DUNGEON_SAKURAJIMAHARD": "Base secreta de las Flores Lunares",
+    "DUNGEON_DARKISLANDHARD": "Ruinas ancestrales de Tenraku"
+  }
+}

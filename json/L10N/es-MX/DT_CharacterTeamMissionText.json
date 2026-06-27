@@ -1,0 +1,19 @@
+{
+  "namespace": "DT_CharacterTeamMissionText",
+  "fields": {
+    "DUNGEON_GRASS": "Cueva de las Praderas",
+    "DUNGEON_FOREST": "Santuario oculto del bosque",
+    "DUNGEON_VOLCANO": "Cueva \u00EDgnea del volc\u00E1n",
+    "DUNGEON_DESERT": "Ruinas ocultas del desierto",
+    "DUNGEON_SNOW": "Cueva helada de la monta\u00F1a nevada",
+    "DUNGEON_SAKURAJIMA": "Cueva espiritual de la isla Sakura",
+    "DUNGEON_DARKISLAND": "Abismo m\u00EDstico de Tenraku",
+    "DUNGEON_GRASSHARD": "Almac\u00E9n de los Cazadores Furtivos Rayne",
+    "DUNGEON_FORESTHARD": "Mercado negro de la Asociaci\u00F3n Pro-Pal",
+    "DUNGEON_VOLCANOHARD": "Mercado negro de los Compa\u00F1eros de la Llama Eterna",
+    "DUNGEON_DESERTHARD": "F\u00E1brica ilegal de Los Vigilantes",
+    "DUNGEON_SNOWHARD": "Laboratorio del Escuadr\u00F3n de Investigaci\u00F3n Gen\u00E9tica",
+    "DUNGEON_SAKURAJIMAHARD": "Base secreta del Clan Flor Lunar",
+    "DUNGEON_DARKISLANDHARD": "Ruinas antiguas de Tenraku"
+  }
+}
