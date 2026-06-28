@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palworld Companion - Breeding System</title>
+    <meta name="theme-color" content="#16213e">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --dark-bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text-light: #eaeaea;
+            --success: #4caf50;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { margin: 0; background: linear-gradient(135deg, var(--dark-bg), var(--card-bg)); color: var(--text-light); min-height: 100vh; padding: 20px 0; }
+        .container { width: min(1200px, calc(100% - 24px)); margin: 0 auto; }
+        .header { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); padding: 28px 20px; border-bottom: 3px solid var(--primary-color); margin-bottom: 24px; border-radius: 12px; }
+        .header h1 { margin: 0 0 8px; font-size: 1.8rem; }
+        .header p { margin: 0; opacity: 0.95; }
+        .nav-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .nav-links a { color: white; text-decoration: none; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.18); transition: all 0.2s; }
+        .nav-links a:hover { background: rgba(255,255,255,0.25); }
+        .nav-links a.active { background: rgba(255,255,255,0.3); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.24); border: 1px solid rgba(255,255,255,0.08); }
+        .card h3 { margin-top: 0; color: var(--primary-color); font-size: 1.2rem; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: #ddd; }
+        .form-group select { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #4a4a6b; background: #23233f; color: white; font-size: 0.95rem; }
+        .form-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 8px rgba(102,126,234,0.3); }
+        .calc-button { width: 100%; padding: 12px; background: var(--primary-color); border: none; border-radius: 6px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+        .calc-button:hover { background: var(--secondary-color); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
+        .result-card { background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1)); border: 2px solid var(--primary-color); }
+        .result-item { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .result-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .power-display { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; padding: 12px; background: rgba(255,255,255,0.06); border-radius: 6px; margin: 8px 0; }
+        .power-item { text-align: center; }
+        .power-label { font-size: 0.85rem; color: #aaa; margin-bottom: 4px; }
+        .power-value { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
+        .power-sep { color: #aaa; font-size: 1.2rem; }
+        .baby-pal { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(102,126,234,0.15); border-radius: 8px; margin-top: 8px; }
+        .baby-image { width: 70px; height: 70px; background: rgba(255,255,255,0.06); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .baby-image img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .baby-info { flex: 1; }
+        .baby-name { font-size: 1.1rem; font-weight: 600; margin: 0; color: var(--text-light); }
+        .baby-meta { font-size: 0.85rem; color: #aaa; margin: 4px 0 0; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; margin-top: 6px; }
+        .badge-calc { background: rgba(255,152,0,0.3); color: #ffb74d; }
+        .badge-special { background: rgba(76,175,80,0.3); color: #81c784; }
+        .info-box { padding: 10px; background: rgba(255,255,255,0.04); border-radius: 6px; margin-bottom: 12px; font-size: 0.9rem; }
+        .combos-list { margin-top: 16px; }
+        .combos-title { color: var(--primary-color); font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; }
+        .combo-item { padding: 8px 10px; background: rgba(76,175,80,0.1); border-left: 3px solid var(--success); border-radius: 4px; margin-bottom: 6px; font-size: 0.85rem; }
+        .combo-item strong { color: var(--text-light); }
+        .no-result { text-align: center; color: #aaa; padding: 20px 10px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 Palworld Breeding System</h1>
+            <p>Calculate offspring Pals based on parent breeding power.</p>
+            <div class="nav-links">
+                <a href="index.html">Pal Database</a>
+                <a href="breeding.html" class="active">Breeding System</a>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>⚙️ Breeding Calculator</h3>
+                
+                <div class="form-group">
+                    <label for="parentA">👨 Parent Pal 1</label>
+                    <select id="parentA">
+                        <option value="">Select a Pal...</option>
+                    </select>
+                </div>
+
+                <div id="parentAInfo" class="info-box" style="display: none;">
+                    <div>Breeding Power: <strong id="parentAPower">—</strong></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="parentB">👩 Parent Pal 2</label>
+                    <select id="parentB">
+                        <option value="">Select a Pal...</option>
+                    </select>
+                </div>
+
+                <div id="parentBInfo" class="info-box" style="display: none;">
+                    <div>Breeding Power: <strong id="parentBPower">—</strong></div>
+                </div>
+
+                <button class="calc-button" onclick="calculateOffspring()">🧬 Calculate Offspring</button>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label for="targetPal">🎯 View parent pairs for a Pal</label>
+                    <select id="targetPal">
+                        <option value="">Select a Pal...</option>
+                    </select>
+                </div>
+
+                <div class="combos-list" id="targetCombosList">
+                    <div class="combos-title">🧬 Parent pairs for this Pal</div>
+                    <div id="targetCombosContainer" class="no-result">Select a Pal to see documented parent pairs.</div>
+                </div>
+
+                <div class="combos-list" id="combosInfo" style="display:none;">
+                    <div class="combos-title">⭐ Special Breeding Combos:</div>
+                    <div id="combosContainer"></div>
+                </div>
+            </div>
+
+            <div class="card result-card">
+                <h3>🎯 Result</h3>
+                <div id="resultContainer">
+                    <div class="no-result">Select two parent Pals and click Calculate to see the result.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allPals = [];
+        let specialCombos = {};
+        let breedingPairsByChild = new Map();
+
+        function getPalLabel(pal) {
+            if (!pal) return 'Unknown';
+            return pal.name || pal.id || 'Unknown';
+        }
+
+        function findPalById(list, value) {
+            if (!value) return null;
+            const normalizedValue = String(value).toLowerCase();
+            return list.find(pal => {
+                if (!pal) return false;
+                const candidates = [pal.id, pal.name, pal.title].filter(Boolean).map(item => String(item).toLowerCase());
+                return candidates.includes(normalizedValue) || candidates.some(candidate => candidate.replace(/[^a-z0-9]/g, '') === normalizedValue.replace(/[^a-z0-9]/g, ''));
+            }) || null;
+        }
+
+        function getBreedingPower(pal) {
+            return pal && pal.breeding && pal.breeding.combiRank ? pal.breeding.combiRank : 1500;
+        }
+
+        function populateSelects() {
+            const parentASelect = document.getElementById('parentA');
+            const parentBSelect = document.getElementById('parentB');
+            const targetSelect = document.getElementById('targetPal');
+            const sortedPals = [...allPals].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            
+            [parentASelect, parentBSelect, targetSelect].forEach(select => {
+                select.innerHTML = '<option value="">Select a Pal...</option>';
+            });
+
+            sortedPals.forEach(pal => {
+                const optionA = document.createElement('option');
+                optionA.value = pal.id;
+                optionA.textContent = `${pal.name} (Power: ${getBreedingPower(pal)})`;
+                parentASelect.appendChild(optionA);
+                
+                const optionB = optionA.cloneNode(true);
+                parentBSelect.appendChild(optionB);
+
+                const optionTarget = optionA.cloneNode(true);
+                targetSelect.appendChild(optionTarget);
+            });
+            
+            parentASelect.addEventListener('change', updateParentInfo);
+            parentBSelect.addEventListener('change', updateParentInfo);
+            targetSelect.addEventListener('change', renderTargetCombos);
+        }
+
+        function updateParentInfo() {
+            const parentA = allPals.find(p => p.id === document.getElementById('parentA').value);
+            const parentB = allPals.find(p => p.id === document.getElementById('parentB').value);
+            
+            if (parentA) {
+                document.getElementById('parentAInfo').style.display = 'block';
+                document.getElementById('parentAPower').textContent = getBreedingPower(parentA);
+            } else {
+                document.getElementById('parentAInfo').style.display = 'none';
+            }
+            
+            if (parentB) {
+                document.getElementById('parentBInfo').style.display = 'block';
+                document.getElementById('parentBPower').textContent = getBreedingPower(parentB);
+            } else {
+                document.getElementById('parentBInfo').style.display = 'none';
+            }
+        }
+
+        function buildSpecialCombosMap(combos) {
+            specialCombos = {};
+            breedingPairsByChild = new Map();
+            combos.forEach(combo => {
+                const key = [combo.parentTribeA, combo.parentTribeB].sort().join('|');
+                if (!specialCombos[key]) specialCombos[key] = [];
+                specialCombos[key].push(combo);
+
+                if (combo.childCharacterId) {
+                    if (!breedingPairsByChild.has(combo.childCharacterId)) {
+                        breedingPairsByChild.set(combo.childCharacterId, []);
+                    }
+                    breedingPairsByChild.get(combo.childCharacterId).push(combo);
+                }
+            });
+        }
+
+        function getSpecialCombo(parentAId, parentBId) {
+            const key = [parentAId, parentBId].sort().join('|');
+            return specialCombos[key] || [];
+        }
+
+        function calculateOffspring() {
+            const parentAId = document.getElementById('parentA').value;
+            const parentBId = document.getElementById('parentB').value;
+            const resultContainer = document.getElementById('resultContainer');
+
+            if (!parentAId || !parentBId) {
+                resultContainer.innerHTML = '<div class="no-result">Please select both parent Pals.</div>';
+                return;
+            }
+
+            const parentA = allPals.find(p => p.id === parentAId);
+            const parentB = allPals.find(p => p.id === parentBId);
+
+            const specialCombosForParents = getSpecialCombo(parentAId, parentBId);
+            if (specialCombosForParents.length > 0) {
+                const childId = specialCombosForParents[0].childCharacterId;
+                const child = allPals.find(p => p.id === childId);
+                if (child) {
+                    renderResult(parentA, parentB, child, true);
+                    showRelatedCombos(parentAId, parentBId);
+                    return;
+                }
+            }
+
+            const powerA = getBreedingPower(parentA);
+            const powerB = getBreedingPower(parentB);
+            const avgPower = (powerA + powerB) / 2;
+            const child = findClosestBreedingPower(avgPower);
+            renderResult(parentA, parentB, child, false, avgPower);
+            showRelatedCombos(parentAId, parentBId);
+        }
+
+        function findClosestBreedingPower(targetPower) {
+            let closest = allPals[0];
+            let minDiff = Math.abs(getBreedingPower(closest) - targetPower);
+            
+            for (let pal of allPals) {
+                const diff = Math.abs(getBreedingPower(pal) - targetPower);
+                if (diff < minDiff || (diff === minDiff && (pal.paldexNumber || 999) < (closest.paldexNumber || 999))) {
+                    minDiff = diff;
+                    closest = pal;
+                }
+            }
+            return closest;
+        }
+
+        function renderResult(parentA, parentB, child, isSpecial, calculatedPower) {
+            const powerA = getBreedingPower(parentA);
+            const powerB = getBreedingPower(parentB);
+            const avgPower = (powerA + powerB) / 2;
+            const childPower = getBreedingPower(child);
+            const resultContainer = document.getElementById('resultContainer');
+
+            const wikiSlug = (child.name || child.id).toLowerCase().replace(/\\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+
+            resultContainer.innerHTML = `
+                <div class="result-item">
+                    <div style="font-size: 0.9rem; color: #aaa; margin-bottom: 8px;">Parent Breeding Powers</div>
+                    <div class="power-display">
+                        <div class="power-item">
+                            <div class="power-label">${parentA.name}</div>
+                            <div class="power-value">${powerA}</div>
+                        </div>
+                        <div class="power-sep">+</div>
+                        <div class="power-item">
+                            <div class="power-label">${parentB.name}</div>
+                            <div class="power-value">${powerB}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: #aaa; font-size: 0.9rem; margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.04); border-radius: 4px;">
+                        <div>Average: <strong style="color: var(--primary-color);">${avgPower.toFixed(1)}</strong></div>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <div style="font-size: 0.9rem; color: #aaa; margin-bottom: 8px;">Resulting Offspring</div>
+                    <div class="baby-pal">
+                        <div class="baby-image">
+                            <img src="https://palworld.wiki.gg/images/${wikiSlug}_icon.png" alt="${child.name}" onerror="this.style.display='none'">
+                        </div>
+                        <div class="baby-info">
+                            <p class="baby-name">${child.name}</p>
+                            <p class="baby-meta">Breeding Power: <strong>${childPower}</strong></p>
+                            <p class="baby-meta" style="font-size: 0.8rem;">Difference: <strong>±${Math.abs(childPower - avgPower).toFixed(1)}</strong></p>
+                            <span class="badge ${isSpecial ? 'badge-special' : 'badge-calc'}">${isSpecial ? '⭐ Special Case' : '📊 Calculated'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showRelatedCombos(parentAId, parentBId) {
+            const related = [];
+            Object.entries(specialCombos).forEach(([key, combos]) => {
+                const [p1, p2] = key.split('|');
+                if ((p1 === parentAId || p2 === parentAId) || (p1 === parentBId || p2 === parentBId)) {
+                    if (key !== [parentAId, parentBId].sort().join('|')) {
+                        related.push({ key, combos });
+                    }
+                }
+            });
+
+            const combosInfo = document.getElementById('combosInfo');
+            const combosContainer = document.getElementById('combosContainer');
+            
+            if (related.length > 0) {
+                combosInfo.style.display = 'block';
+                combosContainer.innerHTML = related.slice(0, 5).map(({ key, combos }) => {
+                    const [p1, p2] = key.split('|');
+                    const parent1 = allPals.find(p => p.id === p1);
+                    const parent2 = allPals.find(p => p.id === p2);
+                    const childPals = combos.map(combo => {
+                        const pal = allPals.find(p => p.id === combo.childCharacterId);
+                        return pal ? pal.name : combo.childCharacterId;
+                    }).join(' / ');
+                    return `<div class="combo-item"><strong>${parent1?.name || p1}</strong> + <strong>${parent2?.name || p2}</strong> → ${childPals}</div>`;
+                }).join('');
+            } else {
+                combosInfo.style.display = 'none';
+            }
+        }
+
+        function renderTargetCombos() {
+            const targetId = document.getElementById('targetPal').value;
+            const targetContainer = document.getElementById('targetCombosContainer');
+            if (!targetId) {
+                targetContainer.innerHTML = '<div class="no-result">Select a Pal to see documented parent pairs.</div>';
+                return;
+            }
+
+            const targetPal = allPals.find(p => p.id === targetId);
+            const combos = breedingPairsByChild.get(targetId) || [];
+
+            if (!combos.length) {
+                targetContainer.innerHTML = `<div class="no-result">No documented parent pairs found for ${targetPal?.name || targetId}.</div>`;
+                return;
+            }
+
+            targetContainer.innerHTML = combos.map(combo => {
+                const parentA = allPals.find(p => p.id === combo.parentTribeA);
+                const parentB = allPals.find(p => p.id === combo.parentTribeB);
+                return `<div class="combo-item"><strong>${parentA?.name || combo.parentTribeA}</strong> + <strong>${parentB?.name || combo.parentTribeB}</strong> → ${targetPal?.name || combo.childCharacterId}</div>`;
+            }).join('');
+        }
+
+        async function init() {
+            try {
+                const [palsResponse, combosResponse] = await Promise.all([
+                    fetch('pals.json'),
+                    fetch('json/Pals/combis.json')
+                ]);
+                allPals = await palsResponse.json();
+                const combos = await combosResponse.json();
+                buildSpecialCombosMap(combos);
+                populateSelects();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.querySelector('.container').innerHTML = '<p style="color: red; text-align: center; padding: 20px;">Failed to load breeding data.</p>';
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(console.error);
+        }
+
+        init();
+    </script>
+</body>
+</html>
